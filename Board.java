@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 public class Board {
 	
@@ -19,7 +20,6 @@ public class Board {
 			
 			for(int j = 0; j < col; ++j){
 				anyBoard[i][j] = '~';
-				
 			}
 			
 		}
@@ -107,14 +107,51 @@ public class Board {
 		for(int i = 1; i <= shipSize; ++i){
 			boolean allow = false;
 			while(!allow){
-				System.out.print("Type in an integer for row(shipSize: " + i +"): " );
-				inputRow = input.nextInt();
-				System.out.print("Type in an integer for column(shipSize: " + i +"): " );
-				inputCol = input.nextInt();
-				
-				System.out.print("Do you want to place the ship horizontally/vertically(h/v): ");
-				inputHV= input.next();
-				System.out.println();
+				while(true)
+				{
+					try
+					{
+						System.out.print("Type in an integer for row(shipSize: " + i +"): " );
+						inputRow = input.nextInt();
+						
+					if (inputRow < row && inputRow >= 0)
+						break;
+					else
+						System.out.println("Please type a number between 0 and " + (row - 1) + ".");
+					}
+					catch (InputMismatchException e)
+					{
+						System.out.println("Input should be an integer.");
+						input.nextLine();
+					}
+				}
+				while(true)
+				{
+					try
+					{
+						System.out.print("Type in an integer for column(shipSize: " + i +"): " );
+						inputCol = input.nextInt();
+						
+					if (inputCol < col && inputCol >= 0)
+						break;
+					else
+						System.out.println("Please type a number between 0 and " + (col - 1) + ".");
+					}
+					catch (InputMismatchException e)
+					{
+						System.out.println("Input should be an integer.");
+						input.nextLine();
+					}
+				}
+				while(true)
+				{
+					System.out.print("Do you want to place the ship horizontally/vertically(h/v): ");
+					inputHV= input.next();
+					if (inputHV.equals("H") || inputHV.equals("h") || inputHV.equals("V") || inputHV.equals("v"))
+						break;
+					else
+						System.out.println("Please enter \"h\" or \"v\".");
+				}
 				
 				if(inputHV.equals("h") || inputHV.equals("H")){
 						int placeRow = inputRow;
@@ -122,11 +159,10 @@ public class Board {
 						if(placeCol >= col){
 							allow = false;
 							System.out.println("Coordinates are out of bounds");
-							
 						}
 						else{
 							allow = true;
-							if((board[placeRow][placeCol] != '~') ){ //|| (board[placeRow][(placeCol -1)] != '~') if theres an issue use this
+							if((board[inputRow][inputCol] != '~') ){
 								System.out.println("Ship already exists in that location");
 								allow = false;
 							}
@@ -139,11 +175,10 @@ public class Board {
 						if(placeRow >= row){
 							allow = false;
 							System.out.println("Coordinates are out of bounds");
-						
 						}
 						else{
 							allow = true;
-							if((board[placeRow][placeCol] != '~') ){ // || (board[(placeRow-1)][placeCol] != '~') if theres an issue use this
+							if((board[inputRow][inputCol] != '~') ){
 								System.out.println("Ship already exists in that location");
 								allow = false;
 							}
@@ -171,13 +206,48 @@ public class Board {
 	public void userFire(char[][]compChar2DArray){
 		Scanner input = new Scanner(System.in);
 		boolean allow = false;
+		int inputRow; 
+		int inputCol;
 		
 		while(!allow){
-			System.out.print("Input the row you want to hit: ");
-			int inputRow = input.nextInt();
+				while(true)
+				{
+					try
+					{
+						System.out.print("Input the row you want to hit: ");
+						inputRow = input.nextInt();
+							
+						if (inputRow < row && inputRow >= 0)
+							break;
+						else
+							System.out.println("Please type a number between 0 and " + (row - 1) + ".");
+						}
+					catch (InputMismatchException e)
+					{
+						System.out.println("Input should be an integer.");
+						input.nextLine();
+					}
+				}
+
 			
-			System.out.print("Input the column you want to hit: ");
-			int inputCol = input.nextInt();
+				while(true)
+				{
+					try
+					{
+						System.out.print("Input the column you want to hit: ");
+						inputCol = input.nextInt();
+						
+						if (inputCol < col && inputCol >= 0)
+							break;
+						else
+							System.out.println("Please type a number between 0 and " + (col - 1) + ".");
+						}
+					catch (InputMismatchException e)
+					{
+						System.out.println("Input should be an integer.");
+						input.nextLine();
+					}
+				}
 		
 			if((inputRow < 0 || inputRow > row) || (inputCol < 0 || inputCol > col)){ //checks if the coordinates are out of bounds
 				System.out.println("You are firing out of bounds, try again: ");
@@ -194,7 +264,6 @@ public class Board {
 					System.out.println("You hit a ship!!");
 					compChar2DArray[inputRow][inputCol] = 'X';
 					visCompChar2DArray[inputRow][inputCol] = 'X';
-					//printBoard(compChar2DArray); //eventually comment this out
 					printBoard(visCompChar2DArray);
 					userShipCounter++;
 					if(userShipCounter == 6){
@@ -228,10 +297,8 @@ public class Board {
 			compRow = rand.nextInt(row);
 			compCol = rand.nextInt(col);
 			active = true;
-			if((userChar2DArray[compRow][compCol] == 'X') || (userChar2DArray[compRow][compCol] == '*')){
+			if((userChar2DArray[compRow][compCol] == 'X') || (userChar2DArray[compRow][compCol] == '*'))
 				active = false;
-				
-			}
 			
 			else if(userChar2DArray[compRow][compCol] == 'O'){ //if it hits a ship
 				System.out.println("Computer hit a ship!!");
@@ -254,20 +321,6 @@ public class Board {
 			
 			
 		}
-		/*for(int i = 0; i < row; ++i){
-			for(int j = 0; j < col; ++j){
-				if(userChar2DArray[i][j] == 'X'){ //if there are no more ships left checking each row and col
-					shipCounter++;
-									
-				}
-				if(shipCounter == 6){
-					System.out.println("Computer wins!!");
-					System.exit(0);
-							
-				}
-			}
-		}*/
-		
 
 	}
 	
@@ -287,8 +340,6 @@ public class Board {
 		//obj.printBoard(obj.visCompChar2DArray);
 		
 		obj.setCompShips(obj.compChar2DArray);
-		//obj.printBoard(obj.compChar2DArray);
-		
 		obj.setUserShips(obj.userChar2DArray, obj.shipSize);
 		
 		while(true){
@@ -296,9 +347,6 @@ public class Board {
 			obj.compFire(obj.userChar2DArray);
 			
 		}
-		
-		
-
 	}
 
 }
