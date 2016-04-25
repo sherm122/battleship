@@ -111,6 +111,7 @@ public class Board {
 				{
 					try
 					{
+						System.out.println("Place your ships strategically :)");
 						System.out.print("Type in an integer for row(shipSize: " + i +"): " );
 						inputRow = input.nextInt();
 						
@@ -196,6 +197,9 @@ public class Board {
 							board[inputRow][inputCol+n] = 'O';
 						}
 					}
+					System.out.print("\033[H\033[2J");
+					System.out.flush();
+					System.out.println("*****This is the user board*****\n");
 					printBoard(board);
 				}
 				
@@ -248,6 +252,9 @@ public class Board {
 						input.nextLine();
 					}
 				}
+				
+				System.out.print("\033[H\033[2J");
+				System.out.flush();
 		
 			if((inputRow < 0 || inputRow > row) || (inputCol < 0 || inputCol > col)){ //checks if the coordinates are out of bounds
 				System.out.println("You are firing out of bounds, try again: ");
@@ -261,9 +268,10 @@ public class Board {
 					allow = false;
 				}
 				else if(compChar2DArray[inputRow][inputCol] == 'O'){ //if it hits a ship
-					System.out.println("You hit a ship!!");
+					System.out.println("You hit a ship!!\n\n");
 					compChar2DArray[inputRow][inputCol] = 'X';
 					visCompChar2DArray[inputRow][inputCol] = 'X';
+					System.out.println("*****This is the computer board*****\n");
 					printBoard(visCompChar2DArray);
 					userShipCounter++;
 					if(userShipCounter == 6){
@@ -273,9 +281,10 @@ public class Board {
 					}
 				}
 				else{ //it is a miss
-					System.out.println("You have missed");
+					System.out.println("You have missed\n\n");
 					visCompChar2DArray[inputRow][inputCol] = '*';
 					compChar2DArray[inputRow][inputCol] = '*';
+					System.out.println("*****This is the computer board*****\n");
 					printBoard(visCompChar2DArray);
 							
 				}
@@ -301,8 +310,10 @@ public class Board {
 				active = false;
 			
 			else if(userChar2DArray[compRow][compCol] == 'O'){ //if it hits a ship
-				System.out.println("Computer hit a ship!!");
+				System.out.println("Computer hit a ship!!\n\n");
 				userChar2DArray[compRow][compCol] = 'X';
+				
+				System.out.println("*****This is the user board*****\n");
 				printBoard(userChar2DArray);
 				compShipCounter++;
 				if(compShipCounter == 6){
@@ -313,8 +324,9 @@ public class Board {
 					
 			}
 			else{ //it is a miss
-				System.out.println("Computer has missed");
+				System.out.println("Computer has missed\n\n");
 				userChar2DArray[compRow][compCol] = '*';
+				System.out.println("*****This is the user board*****\n");
 				printBoard(userChar2DArray);
 						
 			}
@@ -325,6 +337,7 @@ public class Board {
 	}
 	
 	
+	
 	public static void main(String[] args) {
 		
 		
@@ -333,18 +346,32 @@ public class Board {
 		obj.initBoard(obj.compChar2DArray);
 		obj.initBoard(obj.visCompChar2DArray);
 		
-		System.out.println("This is the user board\n");
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+		System.out.println("*****This is the user board*****\n");
 		obj.printBoard(obj.userChar2DArray);
 		
-		//System.out.println("This is the computer board\n");
+		
 		//obj.printBoard(obj.visCompChar2DArray);
 		
 		obj.setCompShips(obj.compChar2DArray);
 		obj.setUserShips(obj.userChar2DArray, obj.shipSize);
 		
 		while(true){
+			System.out.println("*****This is the computer board*****\n");
+			obj.printBoard(obj.visCompChar2DArray);
+			
 			obj.userFire(obj.compChar2DArray);
 			obj.compFire(obj.userChar2DArray);
+			try {
+			    Thread.sleep(10000);                 //1000 milliseconds is one second.
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			}
+			System.out.print("\033[H\033[2J");
+			System.out.flush();
+			
+			
 			
 		}
 	}
