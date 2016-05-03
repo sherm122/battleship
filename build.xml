@@ -1,0 +1,21 @@
+<project>
+	
+	<target name="compile">
+		<javac srcdir=".">
+			<include name="Board.java"/>
+		</javac>
+	</target>
+
+	<target name="run">
+		<java classname="Board">
+			<classpath>
+				<pathelement location="."/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="clean">
+		<delete file="Board.class"/>
+	</target>
+	
+</project>
