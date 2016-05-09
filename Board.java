@@ -189,9 +189,49 @@ public class Board {
 
 			}
 		}
+	
+	}
+	
+
+	
+	public boolean userFire(int inputRow, int inputCol, boolean allow){
+		
+		if ((inputRow < 0 || inputRow > row) || (inputCol < 0 || inputCol > col)) { // checks if the coordinates are out of bounds
+			System.out.println("You are firing out of bounds, try again: ");
+			allow = false;
+		} else { // the coordinates are in bounds
+			allow = true;
+
+			if ((compChar2DArray[inputRow][inputCol] == 'X') || (compChar2DArray[inputRow][inputCol] == '*')) {
+				System.out.println("You have already used this coordinate shoot again");
+				allow = false;
+			} else if (compChar2DArray[inputRow][inputCol] == 'O') { // if it hits a ship
+				System.out.println("You hit a ship!!\n\n");
+				compChar2DArray[inputRow][inputCol] = 'X';
+				visCompChar2DArray[inputRow][inputCol] = 'X';
+				System.out.println("*****This is the computer board*****\n");
+				printBoard(visCompChar2DArray);
+				userShipCounter++;
+				if (userShipCounter == 6) {
+					System.out.println("You win, computer loses!!");
+					System.exit(0);
+
+				}
+			} else { // it is a miss
+				System.out.println("You have missed\n\n");
+				visCompChar2DArray[inputRow][inputCol] = '*';
+				compChar2DArray[inputRow][inputCol] = '*';
+				System.out.println("*****This is the computer board*****\n");
+				printBoard(visCompChar2DArray);
+
+			}
+
+		}
+		
+		return allow;
 	}
 
-	public void userFire(char[][] compChar2DArray) {
+	public void userFireInput(char[][] compChar2DArray) {
 		Scanner input = new Scanner(System.in);
 		boolean allow = false;
 		int inputRow;
@@ -230,38 +270,8 @@ public class Board {
 
 			System.out.print("\033[H\033[2J");
 			System.out.flush();
-
-			if ((inputRow < 0 || inputRow > row) || (inputCol < 0 || inputCol > col)) { // checks if the coordinates are out of bounds
-				System.out.println("You are firing out of bounds, try again: ");
-				allow = false;
-			} else { // the coordinates are in bounds
-				allow = true;
-
-				if ((compChar2DArray[inputRow][inputCol] == 'X') || (compChar2DArray[inputRow][inputCol] == '*')) {
-					System.out.println("You have already used this coordinate shoot again");
-					allow = false;
-				} else if (compChar2DArray[inputRow][inputCol] == 'O') { // if it hits a ship
-					System.out.println("You hit a ship!!\n\n");
-					compChar2DArray[inputRow][inputCol] = 'X';
-					visCompChar2DArray[inputRow][inputCol] = 'X';
-					System.out.println("*****This is the computer board*****\n");
-					printBoard(visCompChar2DArray);
-					userShipCounter++;
-					if (userShipCounter == 6) {
-						System.out.println("You win, computer loses!!");
-						System.exit(0);
-
-					}
-				} else { // it is a miss
-					System.out.println("You have missed\n\n");
-					visCompChar2DArray[inputRow][inputCol] = '*';
-					compChar2DArray[inputRow][inputCol] = '*';
-					System.out.println("*****This is the computer board*****\n");
-					printBoard(visCompChar2DArray);
-
-				}
-
-			}
+			allow = userFire(inputRow,inputCol, allow);
+			
 		}
 	}
 
@@ -301,6 +311,19 @@ public class Board {
 		}
 
 	}
+	
+	public char[][] cloneComputerBoard(){
+		
+		char[][] copyBoard = new char[row][col];
+		
+		for(int i = 0; i < row; ++i){
+			for(int j = 0; j < col; ++j){
+				
+				copyBoard[i][j] = compChar2DArray[i][j];
+			}
+		}
+		return copyBoard;
+	}
 
 	public static void main(String[] args) {
 
@@ -323,7 +346,7 @@ public class Board {
 			System.out.println("*****This is the computer board*****\n");
 			obj.printBoard(obj.visCompChar2DArray);
 
-			obj.userFire(obj.compChar2DArray);
+			obj.userFireInput(obj.compChar2DArray);
 			obj.compFire(obj.userChar2DArray);
 			try {
 				Thread.sleep(10000); // 1000 milliseconds is one second.
